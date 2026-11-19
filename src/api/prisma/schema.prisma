@@ -1,0 +1,23 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+model Pokemon {
+    id          Int      @id @default(autoincrement())
+    name        String
+    description String
+
+    @@map("pokemons")
+}
+
+model Trainer {
+    id Int @id @default(autoincrement())
+    name String
+    age Int
+    weight Float
+    // pokemons Pokemon[] @relation("TrainerPokemons")
+}
