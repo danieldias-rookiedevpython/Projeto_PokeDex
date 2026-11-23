@@ -10,6 +10,7 @@
     "build": "tsc",
     "start": "node dist/server.js"
   },
+  "workspaces": ["shared", "frontend"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/danieldias-rookiedevpython/Projeto_PokeDex.git"
