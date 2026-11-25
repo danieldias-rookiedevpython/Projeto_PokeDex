@@ -8,8 +8,20 @@ datasource db {
 
 model Pokemon {
     id          Int      @id @default(autoincrement())
-    name        String
+    name        String @unique
     description String
+    weight Float
+    height Float
+    gender String
+    abilityId Int @map("ability id")
+    typeId Int @map("type id")
+    idTrainer Int @map("id trainer")
+
+    trainer Trainer @relation(fields: [idTrainer], references: [id])
+
+    type Type @relation(fields: [typeId], references: [id])
+
+    ability Ability @relation(fields: [abilityId], references: [id])
 
     @@map("pokemons")
 }
@@ -17,7 +29,36 @@ model Pokemon {
 model Trainer {
     id Int @id @default(autoincrement())
     name String
+    cpf String @unique
     age Int
     weight Float
-    // pokemons Pokemon[] @relation("TrainerPokemons")
+    height Float
+    gender String
+    userId Int @map("user id")
+    pokemons Pokemon[]
+
+    @@map("trainers")
+}
+
+model Type {
+    id Int @id @default(autoincrement())
+    name String @unique
+    description String
+    pokemons Pokemon[]
+}
+
+model Ability {
+    id Int @id @default(autoincrement())
+    name String @unique
+    description String
+    pokemons Pokemon[]
+}
+
+model User {
+    id Int @id @default(autoincrement())
+    name String
+    email String @unique
+    password String
+
+    @@map("users")
 }
