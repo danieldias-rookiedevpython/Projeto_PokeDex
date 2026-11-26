@@ -6,6 +6,7 @@ import { Login } from "./pages/Login";
 import { Pokemons } from "./pages/Pokemons";
 import { Register } from "./pages/Register";
 import { Trainers } from "./pages/Trainers";
+import { Types } from "./pages/Types";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/pokemons" element={<Pokemons />} />
           <Route path="/trainers" element={<Trainers />} />
+          <Route path="/types" element={<Types />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
