@@ -6,6 +6,7 @@ import { SearchInput } from "../components/SearchInput";
 import { TrainerForm } from "../components/TrainerForm";
 import { listTrainers, removeTrainer } from "../services/trainerService";
 import { parseApiError } from "../utils/errors";
+import { genderLabel } from "../config/options";
 
 export function Trainers() {
   const [trainers, setTrainers] = useState<TrainerDto[]>([]);
@@ -93,28 +94,34 @@ export function Trainers() {
         <p>Nenhum treinador encontrado.</p>
       ) : (
         <table className="table">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Idade</th>
-              <th>Peso (kg)</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((t) => (
-              <tr key={t.id}>
-                <td>{t.name}</td>
-                <td>{t.age}</td>
-                <td>{t.weight}</td>
-                <td className="table-actions">
-                  <button onClick={() => openEdit(t)}>Editar</button>
-                  <button onClick={() => setToDelete(t)}>Remover</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>CPF</th>
+      <th>Idade</th>
+      <th>Peso (kg)</th>
+      <th>Altura (m)</th>
+      <th>Gênero</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {filtered.map((t) => (
+      <tr key={t.id}>
+        <td>{t.name}</td>
+        <td>{t.cpf}</td>
+        <td>{t.age}</td>
+        <td>{t.weight}</td>
+        <td>{t.height}</td>
+        <td>{genderLabel(t.gender)}</td>
+        <td className="table-actions">
+          <button onClick={() => openEdit(t)}>Editar</button>
+          <button onClick={() => setToDelete(t)}>Remover</button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
       )}
 
       <Modal
