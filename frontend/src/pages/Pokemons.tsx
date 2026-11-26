@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { AbilityDto, PokemonDto, TrainerDto, TypeDto } from "shared";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { Modal } from "../components/Modal";
@@ -24,29 +24,33 @@ export function Pokemons() {
   const [toDelete, setToDelete] = useState<PokemonDto | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  const load = useCallback(async () => {
-    try {
-      const [p, t, a, tr] = await Promise.all([
-        listPokemons(),
-        listTypes(),
-        listAbilities(),
-        listTrainers(),
-      ]);
-      setPokemons(p);
-      setTypes(t);
-      setAbilities(a);
-      setTrainers(tr);
-      setPageError("");
-    } catch (error) {
-      setPageError(parseApiError(error).message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    let ignore = false;
+    Promise.all([listPokemons(), listTypes(), listAbilities(), listTrainers()])
+      .then(([p, t, a, tr]) => {
+        if (ignore) return;
+        setPokemons(p);
+        setTypes(t);
+        setAbilities(a);
+        setTrainers(tr);
+        setPageError("");
+      })
+      .catch((error) => {
+        if (!ignore) setPageError(parseApiError(error).message);
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+    return () => {
+      ignore = true;
+    };
+  }, [reloadKey]);
+
+  function reload() {
+    setReloadKey((k) => k + 1);
+  }
 
   // busca por texto com .filter (nome ou descrição)
   const filtered = pokemons.filter((p) => {
@@ -77,7 +81,7 @@ export function Pokemons() {
 
   function handleSaved() {
     setModalOpen(false);
-    load();
+    reload();
   }
 
   async function handleConfirmDelete() {
@@ -86,7 +90,7 @@ export function Pokemons() {
       setDeleting(true);
       await removePokemon(toDelete.id);
       setToDelete(null);
-      await load();
+      reload();
     } catch (error) {
       setToDelete(null);
       setPageError(parseApiError(error).message);

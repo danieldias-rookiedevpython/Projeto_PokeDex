@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { TrainerDto } from "shared";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { Modal } from "../components/Modal";
@@ -19,20 +19,30 @@ export function Trainers() {
   const [toDelete, setToDelete] = useState<TrainerDto | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  const load = useCallback(async () => {
-    try {
-      setTrainers(await listTrainers());
-      setPageError("");
-    } catch (error) {
-      setPageError(parseApiError(error).message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    let ignore = false;
+    listTrainers()
+      .then((data) => {
+        if (ignore) return;
+        setTrainers(data);
+        setPageError("");
+      })
+      .catch((error) => {
+        if (!ignore) setPageError(parseApiError(error).message);
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+    return () => {
+      ignore = true;
+    };
+  }, [reloadKey]);
+
+  function reload() {
+    setReloadKey((k) => k + 1);
+  }
 
   // busca por texto com .filter
   const filtered = trainers.filter((t) =>
@@ -55,7 +65,7 @@ export function Trainers() {
 
   function handleSaved() {
     setModalOpen(false);
-    load();
+    reload();
   }
 
   async function handleConfirmDelete() {
@@ -64,7 +74,7 @@ export function Trainers() {
       setDeleting(true);
       await removeTrainer(toDelete.id);
       setToDelete(null);
-      await load();
+      reload();
     } catch (error) {
       setToDelete(null);
       setPageError(parseApiError(error).message);

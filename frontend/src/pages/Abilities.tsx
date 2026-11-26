@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { AbilityDto } from "shared";
 import { AbilityForm } from "../components/AbilityForm";
 import { ConfirmDialog } from "../components/ConfirmDialog";
@@ -18,20 +18,30 @@ export function Abilities() {
   const [toDelete, setToDelete] = useState<AbilityDto | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  const load = useCallback(async () => {
-    try {
-      setAbilities(await listAbilities());
-      setPageError("");
-    } catch (error) {
-      setPageError(parseApiError(error).message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    let ignore = false;
+    listAbilities()
+      .then((data) => {
+        if (ignore) return;
+        setAbilities(data);
+        setPageError("");
+      })
+      .catch((error) => {
+        if (!ignore) setPageError(parseApiError(error).message);
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+    return () => {
+      ignore = true;
+    };
+  }, [reloadKey]);
+
+  function reload() {
+    setReloadKey((k) => k + 1);
+  }
 
   // busca por texto com .filter
   const filtered = abilities.filter((a) =>
@@ -54,7 +64,7 @@ export function Abilities() {
 
   function handleSaved() {
     setModalOpen(false);
-    load();
+    reload();
   }
 
   async function handleConfirmDelete() {
@@ -63,7 +73,7 @@ export function Abilities() {
       setDeleting(true);
       await removeAbility(toDelete.id);
       setToDelete(null);
-      await load();
+      reload();
     } catch (error) {
       // ex.: habilidade ainda usada por algum Pokémon
       setToDelete(null);

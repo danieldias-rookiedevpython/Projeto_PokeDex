@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { TypeDto } from "shared";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { Modal } from "../components/Modal";
@@ -18,20 +18,30 @@ export function Types() {
   const [toDelete, setToDelete] = useState<TypeDto | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  const load = useCallback(async () => {
-    try {
-      setTypes(await listTypes());
-      setPageError("");
-    } catch (error) {
-      setPageError(parseApiError(error).message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    let ignore = false;
+    listTypes()
+      .then((data) => {
+        if (ignore) return;
+        setTypes(data);
+        setPageError("");
+      })
+      .catch((error) => {
+        if (!ignore) setPageError(parseApiError(error).message);
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+    return () => {
+      ignore = true;
+    };
+  }, [reloadKey]);
+
+  function reload() {
+    setReloadKey((k) => k + 1);
+  }
 
   // busca por texto com .filter
   const filtered = types.filter((t) =>
@@ -54,7 +64,7 @@ export function Types() {
 
   function handleSaved() {
     setModalOpen(false);
-    load();
+    reload();
   }
 
   async function handleConfirmDelete() {
@@ -63,7 +73,7 @@ export function Types() {
       setDeleting(true);
       await removeType(toDelete.id);
       setToDelete(null);
-      await load();
+      reload();
     } catch (error) {
       // ex.: tipo ainda usado por algum Pokémon
       setToDelete(null);
