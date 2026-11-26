@@ -1,16 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
-import type { PokemonDto, TrainerDto, TypeDto } from "shared";
+import type { AbilityDto, PokemonDto, TrainerDto, TypeDto } from "shared";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { Modal } from "../components/Modal";
 import { PokemonForm } from "../components/PokemonForm";
 import { SearchInput } from "../components/SearchInput";
-import { listTrainers, listTypes } from "../services/optionsService";
+import { listAbilities } from "../services/abilityService";
 import { listPokemons, removePokemon } from "../services/pokemonService";
+import { listTrainers } from "../services/trainerService";
+import { listTypes } from "../services/typeService";
 import { parseApiError } from "../utils/errors";
 
 export function Pokemons() {
   const [pokemons, setPokemons] = useState<PokemonDto[]>([]);
   const [types, setTypes] = useState<TypeDto[]>([]);
+  const [abilities, setAbilities] = useState<AbilityDto[]>([]);
   const [trainers, setTrainers] = useState<TrainerDto[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
@@ -23,13 +26,15 @@ export function Pokemons() {
 
   const load = useCallback(async () => {
     try {
-      const [p, t, tr] = await Promise.all([
+      const [p, t, a, tr] = await Promise.all([
         listPokemons(),
         listTypes(),
+        listAbilities(),
         listTrainers(),
       ]);
       setPokemons(p);
       setTypes(t);
+      setAbilities(a);
       setTrainers(tr);
       setPageError("");
     } catch (error) {
@@ -53,6 +58,7 @@ export function Pokemons() {
   });
 
   const typeName = (id: number) => types.find((t) => t.id === id)?.name ?? "-";
+  const abilityName = (id: number) => abilities.find((a) => a.id === id)?.name ?? "-";
   const trainerName = (id: number) => trainers.find((t) => t.id === id)?.name ?? "-";
 
   function openCreate() {
@@ -114,7 +120,9 @@ export function Pokemons() {
             <tr>
               <th>Nome</th>
               <th>Tipo</th>
+              <th>Habilidade</th>
               <th>Treinador</th>
+              <th>Peso / Altura</th>
               <th>Descrição</th>
               <th>Ações</th>
             </tr>
@@ -124,7 +132,9 @@ export function Pokemons() {
               <tr key={p.id}>
                 <td>{p.name}</td>
                 <td>{typeName(p.typeId)}</td>
-                <td>{trainerName(p.trainerId)}</td>
+                <td>{abilityName(p.abilityId)}</td>
+                <td>{trainerName(p.idTrainer)}</td>
+                <td>{p.weight} kg · {p.height} m</td>
                 <td>{p.description}</td>
                 <td className="table-actions">
                   <button onClick={() => openEdit(p)}>Editar</button>
@@ -145,6 +155,7 @@ export function Pokemons() {
         <PokemonForm
           pokemon={editing}
           types={types}
+          abilities={abilities}
           trainers={trainers}
           onSaved={handleSaved}
           onCancel={closeModal}
