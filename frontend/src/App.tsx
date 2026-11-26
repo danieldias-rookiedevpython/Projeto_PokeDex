@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Abilities } from "./pages/Abilities";
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { Pokemons } from "./pages/Pokemons";
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/pokemons" element={<Pokemons />} />
           <Route path="/trainers" element={<Trainers />} />
           <Route path="/types" element={<Types />} />
+          <Route path="/abilities" element={<Abilities />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
