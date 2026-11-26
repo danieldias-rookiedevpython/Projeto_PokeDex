@@ -3,8 +3,9 @@ import { Layout } from "./components/Layout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
-import { Register } from "./pages/Register";
 import { Pokemons } from "./pages/Pokemons";
+import { Register } from "./pages/Register";
+import { Trainers } from "./pages/Trainers";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
         >
           <Route path="/" element={<Home />} />
           <Route path="/pokemons" element={<Pokemons />} />
+          <Route path="/trainers" element={<Trainers />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
