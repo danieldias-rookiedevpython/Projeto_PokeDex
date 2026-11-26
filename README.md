@@ -5,7 +5,7 @@ Repositório do projeto da disciplina de Programação Avançada para Web. A pro
 ## Integrantes
 
 - Daniel da Costa Dias / RGM: 43012884
-- Igor Marinho dos Santos Siva / RGM:
+- Igor Marinho dos Santos Siva / RGM: 44100035
 - Ian Rodrigues Simões Silva / RGM: 42942471
 
 ## Banco de dados
