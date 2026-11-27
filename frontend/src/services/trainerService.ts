@@ -1,4 +1,4 @@
-import type { TrainerDto, TrainerInput } from "shared";
+import type { TrainerDto, TrainerWithUserInput } from "shared";
 import { api } from "./api";
 
 export async function listTrainers() {
@@ -6,12 +6,12 @@ export async function listTrainers() {
   return data;
 }
 
-export async function createTrainer(input: TrainerInput) {
+export async function createTrainer(input: TrainerWithUserInput) {
   const { data } = await api.post<TrainerDto>("/trainers", input);
   return data;
 }
 
-export async function updateTrainer(id: number, input: TrainerInput) {
+export async function updateTrainer(id: number, input: TrainerWithUserInput) {
   const { data } = await api.put<TrainerDto>(`/trainers/${id}`, input);
   return data;
 }

@@ -7,9 +7,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm run build --workspace=shared && tsx watch src/api/src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js"
-},
+    "build": "npm run build --workspace=shared && tsc -p tsconfig.api.json",
+    "start": "node dist/src/api/src/server.js"
+  },
   "workspaces": [
     "shared",
     "frontend"
@@ -34,6 +34,7 @@
     "cors": "^2.8.6",
     "dotenv": "^18.0.10",
     "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
     "pg": "^8.23.1",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1",
@@ -42,11 +43,12 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.6.6",
     "nodemon": "^3.1.14",
     "prisma": "^7.10.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.23.15",
-    "typescript": "^7.0.2"
+    "typescript": "~5.9.3"
   }
 }

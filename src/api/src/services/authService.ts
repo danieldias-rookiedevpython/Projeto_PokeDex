@@ -1,9 +1,11 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import type { LoginInput, RegisterInput } from "shared";
 import { AppError } from "../errors/AppError.js";
 import { userRepository } from "../repositories/userRepository.js";
 
 const SALT_ROUNDS = 10;
+const JWT_SECRET = process.env.JWT_SECRET || "pokedex-dev-secret-change-me";
 
 async function cadastrar(data: RegisterInput) {
     const email = data.email.toLowerCase();
@@ -27,7 +29,9 @@ async function login(data: LoginInput) {
         throw new AppError(401, "E-mail ou senha inválidos.");
     }
 
-    return { id: usuario.id, name: usuario.name, email: usuario.email };
+    const publicUser = { id: usuario.id, name: usuario.name, email: usuario.email };
+    const token = jwt.sign(publicUser, JWT_SECRET, { expiresIn: "8h" });
+    return { token, usuario: publicUser };
 }
 
 export const authService = { cadastrar, login };

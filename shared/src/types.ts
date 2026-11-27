@@ -18,6 +18,7 @@ export interface TrainerDto {
   weight: number;
   height: number;
   gender: string;
+  userId: number;
 }
 
 export interface TypeDto {

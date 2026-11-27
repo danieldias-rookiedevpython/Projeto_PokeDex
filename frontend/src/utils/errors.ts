@@ -22,9 +22,21 @@ export function parseApiError(error: unknown): {
       return { message: "Não foi possível conectar ao servidor.", fieldErrors: {} };
     }
     const data = error.response.data;
+
+    const fieldErrors: FieldErrors = {};
+    if (Array.isArray(data?.campos)) {
+      for (const campo of data.campos) {
+        if (campo?.campo && campo?.mensagem) {
+          fieldErrors[String(campo.campo)] = String(campo.mensagem);
+        }
+      }
+    } else if (data?.errors && typeof data.errors === "object") {
+      Object.assign(fieldErrors, data.errors);
+    }
+
     return {
-      message: data?.message ?? "Erro inesperado.",
-      fieldErrors: data?.errors ?? {},
+      message: data?.error ?? data?.mensagem ?? data?.message ?? "Erro inesperado.",
+      fieldErrors,
     };
   }
   return { message: "Erro inesperado.", fieldErrors: {} };

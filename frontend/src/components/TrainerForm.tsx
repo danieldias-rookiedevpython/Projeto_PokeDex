@@ -7,6 +7,7 @@ import { createTrainer, updateTrainer } from "../services/trainerService";
 import { issuesToFieldErrors, parseApiError } from "../utils/errors";
 import type { FieldErrors } from "../utils/errors";
 import { parseNumber } from "../utils/numbers";
+import { getCurrentUser } from "../services/authService";
 import { FormField } from "./FormField";
 import { SelectField } from "./SelectField";
 
@@ -63,10 +64,15 @@ export function TrainerForm({ trainer, onSaved, onCancel }: Props) {
 
     try {
       setSaving(true);
+      const currentUser = getCurrentUser();
+      if (!currentUser) {
+        throw new Error("Faça login novamente.");
+      }
+      const trainerInput = { ...result.data, userId: currentUser.id };
       if (trainer) {
-        await updateTrainer(trainer.id, result.data);
+        await updateTrainer(trainer.id, trainerInput);
       } else {
-        await createTrainer(result.data);
+        await createTrainer(trainerInput);
       }
       onSaved();
     } catch (error) {
