@@ -65,6 +65,8 @@ Confira se `.env` contém:
 ```dotenv
 PORT=3000
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/pokedex?schema=public"
+JWT_SECRET="replace-with-a-long-random-secret"
+FRONTEND_URL="http://localhost:5173"
 ```
 
 Esses valores correspondem à configuração local do Docker Compose. Não use essas credenciais de desenvolvimento em produção.
@@ -87,9 +89,25 @@ npx prisma db seed
 
 O seed cria usuários, treinadores, tipos, habilidades e Pokémon. Ele pode ser executado novamente sem duplicar os registros.
 
-### 6. API e frontend (etapa futura)
+### 6. Iniciar API e frontend
 
-As etapas para iniciar a API e o frontend ainda serão implementadas. Este repositório não contém um frontend executável e o script atual da API ainda precisa ser alinhado com a localização do servidor. As credenciais abaixo são registros de desenvolvimento no banco; não há ainda uma tela ou rota de login para utilizá-las.
+Em um terminal, na raiz do projeto:
+
+```powershell
+npm run dev
+```
+
+Em outro terminal:
+
+```powershell
+npm run dev --workspace=frontend
+```
+
+Para configurar a URL da API no frontend, copie `frontend/.env.example` para `frontend/.env`:
+
+```powershell
+Copy-Item frontend/.env.example frontend/.env
+```
 
 ## Acesso ao sistema
 
@@ -101,4 +119,4 @@ O seed cria os seguintes usuários de desenvolvimento, todos com a mesma senha:
 | `misty@pokedex.com` | `PokedexDev2026!` |
 | `brock@pokedex.com` | `PokedexDev2026!` |
 
-As senhas são armazenadas como hashes scrypt. Use essas credenciais apenas em desenvolvimento; o fluxo de autenticação ainda será implementado junto com o back-end.
+As senhas são armazenadas como hashes bcrypt. Use essas credenciais apenas em desenvolvimento.

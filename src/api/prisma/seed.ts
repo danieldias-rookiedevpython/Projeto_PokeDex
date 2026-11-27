@@ -1,7 +1,6 @@
 import "dotenv/config";
-import { randomBytes, scryptSync } from "node:crypto";
+import bcrypt from "bcryptjs";
 import { prisma } from "../config/prisma.js";
-
 const seedPassword = "PokedexDev2026!";
 
 const users = [
@@ -146,9 +145,7 @@ const pokemons = [
 ];
 
 function hashPassword(password: string): string {
-    const salt = randomBytes(16).toString("hex");
-    const hash = scryptSync(password, salt, 64).toString("hex");
-    return `scrypt:${salt}:${hash}`;
+    return bcrypt.hashSync(password, 10);
 }
 
 async function main() {
@@ -156,7 +153,7 @@ async function main() {
     for (const user of users) {
         const savedUser = await prisma.user.upsert({
             where: { email: user.email },
-            update: { name: user.name },
+            update: { name: user.name, password: hashPassword(seedPassword) },
             create: {
                 ...user,
                 password: hashPassword(seedPassword),

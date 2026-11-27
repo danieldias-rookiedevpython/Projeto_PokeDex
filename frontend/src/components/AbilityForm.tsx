@@ -1,0 +1,63 @@
+import { useState } from "react";
+import type { FormEvent } from "react";
+import { abilitySchema } from "shared";
+import type { AbilityDto } from "shared";
+import { createAbility, updateAbility } from "../services/abilityService";
+import { issuesToFieldErrors, parseApiError } from "../utils/errors";
+import type { FieldErrors } from "../utils/errors";
+import { FormField } from "./FormField";
+
+interface Props {
+  ability: AbilityDto | null; // null = criando, preenchido = editando
+  onSaved: () => void;
+  onCancel: () => void;
+}
+
+export function AbilityForm({ ability, onSaved, onCancel }: Props) {
+  const [name, setName] = useState(ability?.name ?? "");
+  const [description, setDescription] = useState(ability?.description ?? "");
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [apiMessage, setApiMessage] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setApiMessage("");
+
+    const result = abilitySchema.safeParse({ name, description });
+    if (!result.success) {
+      setErrors(issuesToFieldErrors(result.error.issues));
+      return;
+    }
+    setErrors({});
+
+    try {
+      setSaving(true);
+      if (ability) {
+        await updateAbility(ability.id, result.data);
+      } else {
+        await createAbility(result.data);
+      }
+      onSaved();
+    } catch (error) {
+      // erros da API (ex.: nome repetido) aparecem no campo ou no aviso
+      const { message, fieldErrors } = parseApiError(error);
+      setErrors(fieldErrors);
+      setApiMessage(message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} noValidate>
+      <FormField id="name" label="Nome" value={name} onChange={(e) => setName(e.target.value)} error={errors.name} />
+      <FormField id="description" label="Descrição" value={description} onChange={(e) => setDescription(e.target.value)} error={errors.description} />
+      {apiMessage && <p className="api-error" role="alert">{apiMessage}</p>}
+      <div className="modal-actions">
+        <button type="button" onClick={onCancel} disabled={saving}>Cancelar</button>
+        <button type="submit" disabled={saving}>{saving ? "Salvando..." : "Salvar"}</button>
+      </div>
+    </form>
+  );
+}
