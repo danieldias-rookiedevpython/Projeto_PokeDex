@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { genderSchema, positiveNumber } from "./common";
+import { genderSchema, idSchema, positiveNumber } from "./common";
 
 export const trainerSchema = z.object({
   name: z.string().min(2, "Nome deve ter ao menos 2 caracteres"),
@@ -17,3 +17,11 @@ export const trainerSchema = z.object({
 });
 
 export type TrainerInput = z.infer<typeof trainerSchema>;
+
+
+
+export const trainerWithUserSchema = trainerSchema.extend({
+  userId: idSchema("Informe o userId do usuário"),
+});
+
+export type TrainerWithUserInput = z.infer<typeof trainerWithUserSchema>;

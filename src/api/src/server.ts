@@ -1,34 +1,39 @@
-import express, { type Request, type Response, type NextFunction } from "express";
+import express, { type Request, type Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
-import { swaggerSpec } from "./config/swagger.js";
+import { swaggerSpec } from "../config/swagger.js";
+import routes from "./routes/index.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 dotenv.config();
 
-const app =  express();
+const app = express();
 
-app.use(cors({ origin: process.env.FRONTEND_URL 
-    || "http://localhost:5173"
-}));
+app.use(cors({ origin: process.env.FRONTEND_URL || "http://localhost:5173" }));
 app.use(express.json());
 
 const PORT: number = Number(process.env.PORT || 3000);
 
-// Documentação da API Swagger
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-// Rotas (Ainda serão implementadas)
-
-// Middleware de tratamento de erros
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error(err.stack);
-    res.status(500).json({ error: "Ocorreu um erro interno no servidor." });
+app.get("/", (_req: Request, res: Response) => {
+    res.json({ message: "API Pokédex funcionando", docs: "/docs" });
 });
 
-//Rodando API
+// Documentação da API (Swagger)
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Rotas: routes -> controllers -> services -> repositories
+app.use(routes);
+
+// Rota inexistente
+app.use((_req: Request, res: Response) => {
+    res.status(404).json({ error: "Rota não encontrada." });
+});
+
+// Tratamento de erros (sempre por último)
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
     console.log(`Acesse a documentação da API em http://localhost:${PORT}/docs`);
-})
+});
