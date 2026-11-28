@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { abilitySchema } from "shared";
+import { abilitySchema } from "../../../../shared/src/schemas/ability.js";
 import { abilityController } from "../controllers/abilityController.js";
 import { autenticar } from "../middlewares/auth.js";
 import { validarBody } from "../middlewares/validarSchema.js";

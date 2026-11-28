@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
-import { pokemonSchema } from "shared";
-import type { AbilityDto, PokemonDto, TrainerDto, TypeDto } from "shared";
+import { pokemonSchema } from "../../../shared/src/schemas/pokemon";
+import type { AbilityDto, PokemonDto, TrainerDto, TypeDto } from "../../../shared/src/types";
 import { genderOptions } from "../config/options";
 import { createPokemon, updatePokemon } from "../services/pokemonService";
 import { issuesToFieldErrors, parseApiError } from "../utils/errors";

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { AbilityDto, PokemonDto, TrainerDto, TypeDto } from "shared";
+import type { AbilityDto, PokemonDto, TrainerDto, TypeDto } from "../../../shared/src/types";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { Modal } from "../components/Modal";
 import { PokemonForm } from "../components/PokemonForm";

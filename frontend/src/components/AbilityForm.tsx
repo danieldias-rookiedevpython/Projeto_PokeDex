@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { abilitySchema } from "shared";
-import type { AbilityDto } from "shared";
+import { abilitySchema } from "../../../shared/src/schemas/ability";
+import type { AbilityDto } from "../../../shared/src/types";
 import { createAbility, updateAbility } from "../services/abilityService";
 import { issuesToFieldErrors, parseApiError } from "../utils/errors";
 import type { FieldErrors } from "../utils/errors";

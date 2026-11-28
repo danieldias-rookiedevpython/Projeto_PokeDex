@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { TrainerDto } from "shared";
+import type { TrainerDto } from "../../../shared/src/types";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { Modal } from "../components/Modal";
 import { SearchInput } from "../components/SearchInput";

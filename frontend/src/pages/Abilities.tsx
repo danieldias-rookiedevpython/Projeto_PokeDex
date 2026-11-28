@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { AbilityDto } from "shared";
+import type { AbilityDto } from "../../../shared/src/types";
 import { AbilityForm } from "../components/AbilityForm";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { Modal } from "../components/Modal";

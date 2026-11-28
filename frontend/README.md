@@ -1,75 +1,29 @@
-# React + TypeScript + Vite
+# Frontend PokéDex
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação React + TypeScript + Vite para acessar a PokéDex. Inclui cadastro e login, uma área inicial com acesso aos recursos e telas para gerenciar Pokémon, treinadores, tipos e habilidades. As telas de gerenciamento exigem autenticação.
 
-Currently, two official plugins are available:
+## Executar em desenvolvimento
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Na raiz do repositório, instale as dependências e crie o arquivo de ambiente do frontend:
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```powershell
+npm install
+Copy-Item frontend/.env.example frontend/.env
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Confirme que `VITE_API_URL` aponta para a URL da API (por padrão, `http://localhost:3000`). Inicie a API e o PostgreSQL seguindo as instruções do [README principal](../README.md), depois rode o frontend:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```powershell
+npm run dev --workspace=frontend
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+O Vite disponibiliza a aplicação em http://localhost:5173.
 
+## Verificações
+
+Execute na raiz do repositório:
+
+```powershell
+npm run build --workspace=frontend
+npm run lint --workspace=frontend
 ```

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerSchema } from "shared";
+import { registerSchema } from "../../../shared/src/schemas/auth";
 import { FormField } from "../components/FormField";
 import { register } from "../services/authService";
 import { issuesToFieldErrors, parseApiError } from "../utils/errors";

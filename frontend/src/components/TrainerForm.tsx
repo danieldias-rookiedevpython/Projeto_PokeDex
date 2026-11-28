@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
-import { trainerSchema } from "shared";
-import type { TrainerDto } from "shared";
+import { trainerSchema } from "../../../shared/src/schemas/trainer";
+import type { TrainerDto } from "../../../shared/src/types";
 import { genderOptions } from "../config/options";
 import { createTrainer, updateTrainer } from "../services/trainerService";
 import { issuesToFieldErrors, parseApiError } from "../utils/errors";

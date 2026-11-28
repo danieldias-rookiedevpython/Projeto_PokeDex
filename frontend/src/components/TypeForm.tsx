@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { typeSchema } from "shared";
-import type { TypeDto } from "shared";
+import { typeSchema } from "../../../shared/src/schemas/type";
+import type { TypeDto } from "../../../shared/src/types";
 import { createType, updateType } from "../services/typeService";
 import { issuesToFieldErrors, parseApiError } from "../utils/errors";
 import type { FieldErrors } from "../utils/errors";

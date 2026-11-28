@@ -22,7 +22,7 @@ async function cadastrar(data: RegisterInput) {
 
 async function login(data: LoginInput) {
     const usuario = await userRepository.findCredentialsByEmail(data.email.toLowerCase());
-    const senhaCorreta = usuario ? await bcrypt.compare(data.password, usuario.password) : false;
+    const senhaCorreta = usuario ? await bcrypt.compare(data.password, usuario.password) : fah
 
     // Mesma mensagem para e-mail inexistente e senha errada (não revela qual dos dois falhou).
     if (!usuario || !senhaCorreta) {
